@@ -5,8 +5,6 @@
  */
 package com.jmrtd.icaoCard;
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,10 +22,8 @@ import org.jmrtd.BACKey;
 import org.jmrtd.PACEKeySpec;
 import org.jmrtd.PassportService;
 import org.jmrtd.lds.CardAccessFile;
-import org.jmrtd.lds.LDSFileUtil;
 import org.jmrtd.lds.PACEInfo;
 import org.jmrtd.lds.SecurityInfo;
-import org.jmrtd.lds.icao.DG1File;
 /**
  * s
  * @author gapps
