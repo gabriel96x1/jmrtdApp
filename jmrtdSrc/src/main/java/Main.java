@@ -33,8 +33,8 @@ public class Main {
         
         try {
             
-            PassportService ps = initialize.initCard(1);
-            data.ReadMRZData(ps);
+            PassportService ps = initialize.initCard(1); //The number indicated in initCard is to select the PS/SC Reader number
+            data.ReadMRZData(ps);//ps is the service to be able to use passport filesystem without APDUs
             data.extractPhoto(ps);
             
             
