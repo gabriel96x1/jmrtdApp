@@ -6,7 +6,6 @@
 package com.jmrtd.mavenproject1;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -16,8 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
@@ -35,7 +32,7 @@ import org.jmrtd.lds.icao.DG1File;
  * s
  * @author gapps
  */
-public class Test {
+public class InitAuthICAO {
     
     public static List<PACEInfo> getPACEInfos(Collection<SecurityInfo> securityInfos) {
         List<PACEInfo> paceInfos = new ArrayList<>();
@@ -105,41 +102,50 @@ public class Test {
     
     
     public Boolean attempFunction(int wReader) throws CardException, CardServiceException, IOException, NoSuchAlgorithmException, ParseException{
+        
+        //PS/SC reader selection and conection
         TerminalFactory factory = TerminalFactory.getInstance("PC/SC", null);
         CardTerminal terminal = factory.terminals().list().get(wReader);
+        
+        //Service for selected terminal creation
         CardService cs = CardService.getInstance(terminal);
-        PassportService ps = new PassportService(cs, 256, 224, false, false);
+        
+        
+        PassportService ps = new PassportService(cs, 256, 224, false, false);//Service for an easier way to use Authentications and file reading
+        
         try {
             ps.open();    
+            
             List <CardTerminal> terminals;
             terminals = TerminalFactory.getDefault().terminals().list();
             System.out.println(terminals + "\n");
-
+            
+            //ATR convertion from byte[] to String
             byte[] Atr = ps.getATR();
             StringBuilder builder = new StringBuilder();
             for(byte b : Atr) {
                 builder.append(String.format("%02x", b));
             }
             String AtrHex = builder.toString().toUpperCase();
-            
             System.out.println("ATR= " + AtrHex);
+            
+            //BACKey generation
             BACKey backey = BACKeyGenerate("000000000000000","1996-11-10", "2020-11-23"); //DocNumber, BirthDate, Expdate
             
             //PACE Authentication
-           
             String autRes = PACEAuthRes("530163",PassportService.EF_CARD_ACCESS, ps);
-           
+            
             System.out.println(autRes);
             
             //BAC Authentication
             //ps.doBAC(backey); -----------------------------------BAC Auth
             
-            ps.sendSelectApplet(true);
+            ps.sendSelectApplet(true); //selection of basic applet for eMRTD documents
             ps.getInputStream(PassportService.EF_COM).read();
             InputStream is1;
             is1 = ps.getInputStream(PassportService.EF_DG1);
 
-            // Lee los datos basicos de la tarjeta
+            // Basic data from DG1 read
             DG1File dg1 = (DG1File) LDSFileUtil.getLDSFile(PassportService.EF_DG1, is1);
             System.out.println("------------DG1----------");
             System.out.println("DocumentNumber: " + dg1.getMRZInfo().getDocumentNumber());
@@ -164,8 +170,6 @@ public class Test {
             System.out.println(Arrays.toString(e.getStackTrace()));
             ps.close();
             return false;
-/*        } catch (ParseException e) {
-            System.out.println(e.getMessage());        
-          }*/
-        }}
+        }
+    }
 }

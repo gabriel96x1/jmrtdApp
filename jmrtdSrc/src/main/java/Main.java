@@ -8,7 +8,7 @@
  *
  * @author gapps
  */
-import com.jmrtd.mavenproject1.Test;
+import com.jmrtd.mavenproject1.InitAuthICAO;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -27,7 +27,7 @@ public class Main {
      */
     public static void main(String[] args) throws NoSuchAlgorithmException, ParseException, GeneralSecurityException {
         // TODO code application logic here
-        Test tst = new Test();
+        InitAuthICAO tst = new InitAuthICAO();
         try {
             tst.initCard();
         } catch (CardException | CardServiceException | IOException ex) {
