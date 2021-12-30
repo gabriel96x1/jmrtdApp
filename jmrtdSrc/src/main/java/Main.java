@@ -8,7 +8,8 @@
  *
  * @author gapps
  */
-import com.jmrtd.mavenproject1.InitAuthICAO;
+import com.jmrtd.icaoCard.InitAuthICAO;
+import com.jmrtd.icaoCard.readBiometric;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -17,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.smartcardio.CardException;
 import net.sf.scuba.smartcards.CardServiceException;
+import org.jmrtd.PassportService;
 
 
 public class Main {
@@ -27,9 +29,15 @@ public class Main {
      */
     public static void main(String[] args) throws NoSuchAlgorithmException, ParseException, GeneralSecurityException {
         // TODO code application logic here
-        InitAuthICAO tst = new InitAuthICAO();
+        InitAuthICAO initialize = new InitAuthICAO();
+        readBiometric filesystem = new readBiometric();
+        
         try {
-            tst.initCard();
+            
+            PassportService ps = initialize.initCard(1);
+            filesystem.ReadMRZData(ps);
+            
+            
         } catch (CardException | CardServiceException | IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

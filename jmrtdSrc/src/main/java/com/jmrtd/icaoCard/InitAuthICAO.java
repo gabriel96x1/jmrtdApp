@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jmrtd.mavenproject1;
+package com.jmrtd.icaoCard;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -94,14 +94,7 @@ public class InitAuthICAO {
     }
     
     
-    public void initCard() throws CardException, CardServiceException, IOException, NoSuchAlgorithmException, ParseException, GeneralSecurityException{
-
-        attempFunction(1);
-       
-    }
-    
-    
-    public Boolean attempFunction(int wReader) throws CardException, CardServiceException, IOException, NoSuchAlgorithmException, ParseException{
+    public PassportService initCard(int wReader) throws CardException, CardServiceException, IOException, NoSuchAlgorithmException, ParseException{
         
         //PS/SC reader selection and conection
         TerminalFactory factory = TerminalFactory.getInstance("PC/SC", null);
@@ -135,41 +128,18 @@ public class InitAuthICAO {
             //PACE Authentication
             String autRes = PACEAuthRes("530163",PassportService.EF_CARD_ACCESS, ps);
             
-            System.out.println(autRes);
-            
+            System.out.println(autRes);           
             //BAC Authentication
             //ps.doBAC(backey); -----------------------------------BAC Auth
-            
-            ps.sendSelectApplet(true); //selection of basic applet for eMRTD documents
-            ps.getInputStream(PassportService.EF_COM).read();
-            InputStream is1;
-            is1 = ps.getInputStream(PassportService.EF_DG1);
-
-            // Basic data from DG1 read
-            DG1File dg1 = (DG1File) LDSFileUtil.getLDSFile(PassportService.EF_DG1, is1);
-            System.out.println("------------DG1----------");
-            System.out.println("DocumentNumber: " + dg1.getMRZInfo().getDocumentNumber());
-            System.out.println("Gender: " + dg1.getMRZInfo().getGender());
-            System.out.println("DateOfBirth: " + dg1.getMRZInfo().getDateOfBirth());
-            System.out.println("DateOfExpiry: " + dg1.getMRZInfo().getDateOfExpiry());
-            System.out.println("DocumentCode: " + dg1.getMRZInfo().getDocumentCode());
-            System.out.println("IssuingState: " + dg1.getMRZInfo().getIssuingState());
-            System.out.println("Nationality: " + dg1.getMRZInfo().getNationality());
-            System.out.println("OptionalData1: " + dg1.getMRZInfo().getOptionalData1());
-            System.out.println("OptionalData2: " + dg1.getMRZInfo().getOptionalData2());
-            System.out.println("PersonalNumber: " + dg1.getMRZInfo().getPersonalNumber());
-            System.out.println("PrimaryIdentifier: " + dg1.getMRZInfo().getPrimaryIdentifier());
-            System.out.println("SecondaryIdentifier: " + dg1.getMRZInfo().getSecondaryIdentifier());
-
-            is1.close();
-            return true;
+           
+            return ps;
 
         } catch (CardServiceException | IOException  e) {
             System.out.println("errors"); 
             System.out.println(e.getMessage());
             System.out.println(Arrays.toString(e.getStackTrace()));
             ps.close();
-            return false;
+            return null;
         }
     }
 }
