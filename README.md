@@ -1,2 +1,2 @@
 # jmrtdApp
- jmrtdApp to authenticate and read son eIDs ICAO Compliant
+A Free Softare to authenticate and read ICAO Compliants eID information.
